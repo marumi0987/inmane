@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+.fadein {
+    animation-name: fadein;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  max-width: 350px;
+  padding: 40px 40px;
+  background-color: #F7F7F7;
+  margin: 0 auto 25px;
+  margin-top: 50px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.box {
+	max-width: 20em;
+	margin: 0 auto;
+}
+.bg-image {
+  background-image: url('../../images/login_bg.png');
+  background-size: cover;
+}
+.bg-mask {
+  height: 100%;
+  background: rgba(255,255,255,0.5);
+}

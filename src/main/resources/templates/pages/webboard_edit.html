@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>メッセージ編集</title>
+<meta th:include="common/layout.html :: head" th:remove="tag"></meta>
+<style type="text/css">
+.btn-flat-horizontal-border {
+	position: relative;
+	display: inline-block;
+	font-weight: bold;
+	padding: 1em 0.5em;
+	text-decoration: none;
+	color: #FFF;
+	background: #ff7f7f;
+	transition: .4s;
+}
+
+.btn-flat-horizontal-border>span {
+	border-bottom: solid 2px #FFF;
+	border-top: solid 2px #FFF;
+}
+
+.btn-flat-horizontal-border:hover span {
+	padding: 0.1em 0;
+}
+</style>
+<script>
+  $(function() {
+    var outer = $("<div>").css({
+      visibility: "hidden",
+      width: 100,
+      overflow: "scroll",
+    }).appendTo("body"), width = $("<div>").css({
+      width: "100%"
+    }).appendTo(outer).outerWidth(), result = 0;
+
+    outer.remove();
+    result = 100 - width;
+    $(".table-fixed thead").css({
+      paddingRight: result
+    });
+  });
+  function ShowLength(str) {
+    document.getElementById("inputlength").innerHTML = str.length + "文字";
+  }
+</script>
+</head>
+<body>
+	<div class="wrapper">
+		<!--/* ▼ サイドメニュー表示 */-->
+		<div th:include="common/layout :: sideMenu"></div>
+		<!--/* ▲ サイドメニュー表示 */-->
+
+		<div class="container">
+			<header th:replace="common/layout :: header('メッセージ編集')"></header>
+
+			<div class="form-group">
+				<form method="post" action="#" th:action="@{/webboard/edit}"
+					th:object="${messageForm}">
+					<div>
+						<label for="id">メッセージID</label><br> <input type="text"
+							name="id" placeholder="id" th:field="*{id}" readonly
+							class="form-control">
+					</div>
+					<div>
+						<input type="hidden" name="hashedId" placeholder="hashedId"
+							th:field="*{hashedId}" readonly class="form-control">
+					</div>
+					<br>
+					<div>
+					<span
+							th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+							class="errorMsg">error!</span><br>
+						<label for="name">なまえ</label><br> <input type="text"
+							name="name" placeholder="name" th:field="*{name}"
+							class="form-control"> <br>
+					</div>
+				
+					<div>
+					<span th:if="${#fields.hasErrors('message')}"
+							th:errors="*{message}" class="errorMsg">error!</span><br>
+						<label for="message">メッセージ</label><br>
+						<textarea name="message" rows="4" cols="50" maxlength="250"
+							th:field="*{message}" placeholder="message" class="form-control"
+							onkeyup="ShowLength(value);"></textarea>
+						<p id="inputlength">0文字</p>
+						<br>
+					</div>
+				
+					<button type="submit" value="更新"
+						class="btn btn-primary rounded-pill ">更新</button>
+				</form>
+			</div>
+			<br> <br>  <a
+				class="btn btn-outline-secondary"
+				href="http://localhost:8080/inmane/webboard/view" role="button">もどる</a>
+
+			<!--/* ▼ フッター表示 */-->
+			<div th:include="common/layout :: footer"></div>
+			<!--/* ▲ フッター表示 */-->
+		</div>
+
+
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# ==============================================================
+# Spring Boot 設定
+# ==============================================================
+logging:
+  config: classpath:logback.xml
+server:
+  servlet:
+    context-path: /inmane
+    session:
+      timeout: 300
+  forward-headers-strategy: none
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    password: inmnpass
+    url: jdbc:mariadb://localhost:3306/inmane
+    username: inmnuser
+  messages:
+    basename: application,MessageResources
+  session:
+    store-type: jdbc
+  thymeleaf:
+    cache: false
+    mode: HTML
+    prefix: classpath:/templates/pages/

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+<meta th:include="common/layout :: head" th:remove="tag"></meta>
+<link rel="stylesheet" th:href="@{/css/page/users.css}" />
+<script th:src="@{/js/page/users.js}"></script>
+
+</head>
+
+<body th:data-context-path="@{/}">
+  <main>
+  <div th:fragment="tabs">
+    <tabs id="tabs">
+      <!--/* ▼ タブ表示 */-->
+      <div
+        th:with="tabs = ${ {'ユーザー検索', 'ユーザー登録'} },
+                      paths = ${ {'__@{/maintenance/users/search}__',
+                                  '__@{/maintenance/users/new}__'
+                              } },
+                      toPaths = ${ {'__@{/maintenance/users/search?roleName=ALL}__',
+                                    '__@{/maintenance/users/new}__'
+                                } },
+                      uri   = ${#httpServletRequest.requestURI}">
+        <ul class="nav nav-tabs" id="tab" role="tablist">
+          <div th:each="tabNm, status : ${tabs}">
+            <li class="nav-item">
+              <!--/* 現在のURIを見て、タブの背景色が変わるようクラスを設定 */-->
+              <a href="#" th:class="${#strings.contains(uri, paths[__${status.index}__])} ? 'nav-link active' : 'nav-link'"
+                data-toggle="tab" role="tab" aria-controls="${toPaths[__${status.index}__]}"
+                th:aria-selected="${#strings.contains(uri, paths[__${status.index}__])} ? 'true' : 'false'"
+                th:data="${toPaths[__${status.index}__]}"
+                th:onclick="window.location.href=this.getAttribute('data')">
+                <h5 th:text="${tabNm}"></h5>
+              </a>
+            </li>
+          </div>
+        </ul>
+      </div>
+    <!--/* ▲ タブ表示 */-->
+    </tabs>
+  </div>
+  </main>
+  <div class="u-outer-spaces-helper"></div>
+</body>
+</html>

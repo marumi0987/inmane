@@ -1,0 +1,228 @@
+<!-- TODO このファイルは必要でしょうか -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>掲示板</title>
+<meta th:include="common/layout.html :: head" th:remove="tag"></meta>
+<style>
+p . word-break {
+	word-break: normal;
+}
+
+.col-lg-4 col-md-4 col-sm-4 col-xs-4 text-truncate {
+	word-break: normal;
+}
+
+.col-lg-6 col-md-6 col-sm-6 col-xs-6 text-truncate {
+	word-break: normal;
+}
+
+.row {
+	word-break: normal;
+}
+
+.col-lg-10 col-md-10 col-sm-10 col-xs-10 {
+	word-break: normal;
+}
+
+pre {
+	white-space: pre-wrap;
+	font-family: 'Noto Sans JP', sans-serif !important;
+	text-align: left;
+}
+/*全体*/
+.hidden_box {
+	margin: 2em 0; /*前後の余白*/
+	padding: 0;
+}
+
+/*ボタン装飾*/
+.hidden_box label {
+	padding: 15px;
+	font-weight: bold;
+	border: solid 2px black;
+	cursor: pointer;
+}
+
+/*ボタンホバー時*/
+.hidden_box label:hover {
+	background: #efefef;
+}
+
+/*チェックは見えなくする*/
+.hidden_box input {
+	display: none;
+}
+
+/*中身を非表示にしておく*/
+.hidden_box .hidden_show {
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	opacity: 0;
+	transition: 0.8s;
+}
+
+/*クリックで中身表示*/
+.hidden_box input:checked ~ .hidden_show {
+	padding: 10px 0;
+	height: auto;
+	opacity: 1;
+}
+</style>
+<script>
+  $(function() {
+    var outer = $("<div>").css({
+      visibility: "hidden",
+      width: 100,
+      overflow: "scroll",
+    }).appendTo("body"), width = $("<div>").css({
+      width: "100%"
+    }).appendTo(outer).outerWidth(), result = 0;
+
+    outer.remove();
+    result = 100 - width;
+    $(".table-fixed thead").css({
+      paddingRight: result
+    });
+  });
+</script>
+</head>
+<body>
+	<div class="wrapper">
+		<!--/* ▼ サイドメニュー表示 */-->
+		<div th:include="common/layout :: sideMenu"></div>
+		<!--/* ▲ サイドメニュー表示 */-->
+
+		<div class="container">
+			<header th:replace="common/layout :: header('掲示板')"></header>
+			<form method="post" action="#" th:action="@{/webboard/create}"
+				th:object="${messageForm}">
+				<input type="text" placeholder="name 1～50文字" value="" maxlength="50"
+					th:field="*{name}"> <br /> <span
+					th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+					class="errorMsg">error!</span> <br>
+
+				<textarea rows="4" cols="50" maxlength="100"
+					placeholder="message 1～100文字" th:field="*{message}"></textarea>
+
+				<span th:if="${#fields.hasErrors('message')}" th:errors="*{message}"
+					class="errorMsg">error!</span> <br> <input type="submit"
+					value="投稿"> <br> <br>
+			</form>
+			<!--/* ▼ 検索結果リスト */-->
+			<table class="table table-fixed table-hover table-striped border"
+				name="dataList" id="dataList">
+				<!-- 				<thead>
+					<tr>
+						<th class="col-lg-7  col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+									<label>No.</label>
+								</div>
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+									<label>なまえ</label>
+								</div>
+								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+									<div class="row">
+										<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+											<label>投稿日時</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</th>
+						<th class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+									<label>メッセージ</label>
+								</div>
+							</div>
+						</th>
+					</tr>
+				</thead> -->
+				<tbody>
+					<tr th:if="message" th:each="message, messageStat:${messageList}">
+						<td class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+									<label th:text="${messageStat.count}"></label>
+								</div>
+								<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-truncate">
+									<div class="row">
+										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+											<pre>
+										<label th:text="${message.name}" th:title="${message.name}"></label>
+									</pre>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+									<div class="row">
+										<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+											<pre>
+												<label th:text="${message.message}"
+													th:title="${message.message}"></label>
+											</pre>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div
+									class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-truncate">
+									<label
+										th:text="${#dates.format(message.createdAt, 'yyyy/MM/dd HH:mm:ss')}"
+										th:title="${#dates.format(message.createdAt, 'yyyy/MM/dd HH:mm:ss')}"></label>
+								</div>
+							</div>
+						</td>
+						<td class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div
+									class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-truncate">
+									<form method="post" action="#" th:action="@{/webboard/delete}"
+										th:object="${messageList}">
+										<input type="hidden" name="id" th:value="${message.id}">
+										<input type="hidden" name="createId"
+											th:value="${message.createdId}"> <input type="submit"
+											th:if="${ checkRoleName ||  userId== message.createdId}"
+											value="削除">
+									</form>
+
+									<form action="#" th:object="${messageList}"
+										th:action="@{/webboard/edit}">
+										<input type="hidden" name="id" th:value="${message.id}">
+										<input type="submit"
+											th:if="${ checkRoleName ||  userId== message.createdId}"
+											value="編集">
+										<!-- th:href="@{'/webboard/edit?id=' + ${message.id}}"  -->
+									</form>
+								</div>
+							</div> <!-- 				<div class="hidden_box">
+							<label for="label2">クリックして表示</label> <input type="checkbox"
+								id="label2" />
+							<div class="hidden_show">
+								非表示ここから
+								<p>
+									てすとだよ
+								</p>
+								ここまで
+							</div> --> <!-- 		</div> -->
+						</td>
+
+					</tr>
+				</tbody>
+			</table>
+			<!--/* ▲ 検索結果リスト */-->
+		</div>
+	</div>
+
+	<!--/* ▼ フッター表示 */-->
+	<div th:include="common/layout :: footer"></div>
+	<!--/* ▲ フッター表示 */-->
+</body>
+</html>

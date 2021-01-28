@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/schema/security"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:fragment="head">
+<title>ERROR</title>
+<meta th:include="common/layout.html::head" th:remove="tag"></meta>
+</head>
+
+<body>
+  <main>
+  <section>
+    <div>
+      <div>ERROR</div>
+
+      <div>
+        <h1>技術的な問題が発生しています</h1>
+
+        <hr>
+
+        <p>
+          ご迷惑をお掛けしております。もう一度はじめから処理をしてください。<br>同様のエラーが起こる場合はシステム管理者までご連絡ください。
+        </p>
+      </div>
+    </div>
+  </section>
+  </main>
+</body>
+</html>

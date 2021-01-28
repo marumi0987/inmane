@@ -1,0 +1,16 @@
+p . word-break {
+	word-break: normal;
+}
+
+pre {
+	white-space: pre-wrap;
+	font-family: 'Noto Sans JP', sans-serif !important;
+	text-align: left;
+	margin: 0px;
+	word-wrap: break-word;
+}
+
+}
+textarea {
+	margin: 0px;
+}

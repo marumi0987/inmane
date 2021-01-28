@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>コメント</title>
+<meta th:include="common/layout.html :: head" th:remove="tag"></meta>
+<style>
+.message-info {
+	text-align: left;
+}
+
+.mgr-10 {
+	margin-right: 10px;
+}
+
+.date {
+	text-align: right;
+	font-size: 16px;
+	color: gray;
+	margin-bottom: 0px;
+}
+
+.button {
+	text-align: right;
+}
+</style>
+<script th:src="@{/js/page/webboard.js}"></script>
+</head>
+<body>
+	<div class="wrapper">
+		<!--/* ▼ サイドメニュー表示 */-->
+		<div th:include="common/layout :: sideMenu"></div>
+		<!--/* ▲ サイドメニュー表示 */-->
+
+		<div class="container">
+			<header th:replace="common/layout :: header('返信')"></header>
+			<form method="post" action="#" th:action="@{/webboard}"
+				th:object="${messageForm}">
+				<!--/* ▼ カード */-->
+				<div class="card">
+					<div class="card-header ">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+									<span class="mgr-10">ID:&nbsp;<label th:text="*{id} "></label></span>
+									<span class="mgr-10"> Name:&nbsp;<label
+										th:text="*{name}"> </label></span>
+								</div>
+								<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+									<p class="date">
+										<label
+											th:text="*{#dates.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}"
+											th:title="*{#dates.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}"></label>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-body" th:text="*{message}"></div>
+				</div>
+				<!--/* ▲ カード */-->
+			</form>
+			<br> <br> <br>
+
+			<!-- 　　　　　　　　　　　　↓ボタン -->
+			<button type="button" class="btn btn-primary " data-toggle="collapse"
+				th:data-target="|#collaps|" aria-expanded="false"
+				aria-controls="collapseExample">コメントする</button>
+
+			<!-- 　　　　　　　　　ボタン -->
+
+			<!-- 		    非表示ここから -->
+			<div class="collapse" th:id="|collaps|">
+				<form method="post" action="#" th:action="@{/webboard/reply}"
+					th:object="${messageReplyForm}">
+					<div>
+						<label for="messageId">メッセージID</label><br> <input type="text"
+							name="messageId" placeholder="messageId" th:field="*{messageId}"
+							readonly="readonly">
+					</div>
+					<br>
+					<div>
+						<label for="name">なまえ</label><br> <input type="text"
+							name="name" placeholder="name" th:field="*{name}"> <br>
+						<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+							class="errorMsg">error!</span>
+					</div>
+					<br>
+					<div>
+						<label for="message">メッセージ</label><br>
+						<textarea name="message" rows="4" cols="50" maxlength="250"
+							th:field="*{message}" placeholder="message"></textarea>
+						<br> <span th:if="${#fields.hasErrors('message')}"
+							th:errors="*{message}" class="errorMsg">error!</span>
+					</div>
+					<br> <br> <input type="submit" value="投稿">
+				</form>
+			</div>
+			<!-- 		ここまで -->
+
+			<br> <br> <br> <label>コメント一覧</label>
+			<div th:if="message"
+				th:each="message, messageStat:${messageReplyList}" th:remove="tag">
+				<!--/* ▼ カード */-->
+				<div class="card">
+					<div class="card-header">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+									<span class="mgr-10">No:&nbsp;<label
+										th:text="${messageStat.count}"></label>
+									</span> <span class="mgr-10"><label th:text="${message.id}"
+										th:title="${message.id}" th:id="id + ${message.id}"> </label></span> <span
+										class="mgr-10">Name: &nbsp;<label
+										th:text="${message.name}" th:title="${message.name}"
+										th:id="beforeEditName + ${message.id}"> </label></span>
+								</div>
+								<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+									<p class="date">
+										<label
+											th:text="*{#dates.format(message.createdAt, 'yyyy/MM/dd HH:mm:ss')}"
+											th:title="*{#dates.format(message.createdAt, 'yyyy/MM/dd HH:mm:ss')}"></label>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<pre th:text="${message.message}" th:title="${message.message}"
+							th:id="beforeEditMessage +${message.id}">
+												</pre>
+					</div>
+					<div class="card-footer">
+						<div class="button">
+							<button class="btn btn-primary" data-target="#myModal"
+								data-toggle="modal" th:class="editButton" data-id="${message.id}"  th:value="${message.id}"
+								data-name="${message.name}" data-message="${message.message}" >編集</button>
+							<button class="btn btn-primary">削除</button>
+						</div>
+					</div>
+
+				</div>
+				<br>
+			</div>
+			<!--/* ▲ カード */-->
+
+			<!--👅 モーダルの設定 -->
+			<div class="modal fade" id="myModal" data-backdrop="static"
+				data-keyboard="false" tabindex="-1" role="dialog"
+				aria-labelledby="staticBackdropLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="staticBackdropLabel">メッセージ編集</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="閉じる">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<!--👅 フォーム -->
+						<div class="form-group">
+							<form method="post" action="#"
+								th:action="@{/webboard_reply/edit}"
+								th:object="${messageReplyForm}">
+								<div class="modal-body">
+									Coming Soon!
+
+									<div>
+										<label for="id">メッセージID</label><br> <input type="text"
+											name="id" placeholder="id" readonly class="form-control"
+											id="editId">
+									</div>
+									<div>
+										<input type="hidden" name="hashedId" placeholder="hashedId"
+											readonly class="form-control">
+									</div>
+									<br>
+									<div>
+										<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+											class="errorMsg">error!</span><br> <label for="name">なまえ</label><br>
+										<input type="text" name="name" placeholder="name"
+											th:field="*{name}" class="form-control" id="editName">
+										<br>
+									</div>
+
+									<div>
+										<span th:if="${#fields.hasErrors('message')}"
+											th:errors="*{message}" class="errorMsg">error!</span><br>
+										<label for="message">メッセージ</label><br>
+										<textarea name="message" rows="4" cols="50" maxlength="250"
+											placeholder="message" class="form-control"
+											onkeyup="ShowLength(value);" id="editMessage"></textarea>
+										<p id="inputlength">0文字</p>
+										<br>
+									</div>
+								</div>
+
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-dismiss="modal">閉じる</button>
+									<button type="button" class="btn btn-primary">編集</button>
+								</div>
+							</form>
+							<!--/* ▲フォーム */-->
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<br>
+
+			<!--▲ モーダルの設定 -->
+
+			<br>
+		</div>
+		<br> <a class="btn btn-outline-secondary"
+			href="http://localhost:8080/inmane/webboard/view" role="button">もどる</a>
+	</div>
+
+
+
+
+
+	<br>
+	<br>
+	<br>
+	<br>
+	</div>
+	<!--/* ▼ フッター表示 */-->
+	<div th:include="common/layout :: footer"></div>
+	<!--/* ▲ フッター表示 */-->
+
+</body>
+</html>

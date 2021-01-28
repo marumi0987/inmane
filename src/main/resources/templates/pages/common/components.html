@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<style>
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	padding-top: 100px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Content */
+.modal-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 50%;
+	display: block;
+}
+
+.closeMark {
+	color: #aaaaaa;
+	float: right;
+	font-size: 25px;
+	font-weight: bold;
+}
+
+.closeMark:hover, .closeMark:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+  <!--/* Modalダイアログ */-->
+  <div th:fragment="modalDialog">
+    <div id="modalDialog" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="closeMark" onclick="">&times;</span>
+        <p id="msg"></p>
+        <button id="btnOk">はい</button>
+        <button id="btnCancel">キャンセル</button>
+      </div>
+    </div><!-- //#modalDialog -->
+  </div><!-- //modalDialog -->
+
+  <!--/* ダイアログメッセージ */-->
+  <div th:fragment="dialogMessages">
+    <input type="hidden" id="appCompleteMessageSuccess"
+      th:value='${appCompleteMessageSuccess}' /> <input type="hidden"
+      id="appCompleteMessageWarning"
+      th:value='${appCompleteMessageWarning}' /> <input type="hidden"
+      id="appCompleteMessageFailure"
+      th:value='${appCompleteMessageFailure}' />
+  </div><!-- //dialogMessages -->
+  <!--/* サイドメニュー */-->
+  <div th:fragment="sideMenu">
+    <div class="wrapper">
+      <nav id="sidebar">
+        <div class="sidebar-header">
+          <h3>稼働状況管理<br>システム</h3>
+        </div>
+        <div th:with="menus = ${ {
+                          'TOP',
+                          '稼働状況情報',
+                          '契約情報',
+                          'スタッフ情報',
+                          '取引先管理',
+                          '請求先情報',
+                          '案件管理',
+                          '掲示板',
+                          'ユーザ管理'
+                        } },
+              paths = ${ {
+                          '__@{/top}__',
+                          '__@{/assignments}__',
+                          '__@{/contracts}__',
+                          '__@{/staffs}__',
+                          '__@{/clients}__',
+                          '__@{/bill_adresses}__',
+                          '__@{/projects}__',
+                           '__@{/webboard/view}__',
+                          '__@{/maintenance/users/}__'
+                        } },
+              toPaths = ${ {
+                          '__@{/top}__',
+                          '__@{/assignments}__',
+                          '__@{/contracts}__',
+                          '__@{/staffs}__',
+                          '__@{/clients}__',
+                          '__@{/bill_adresses}__',
+                          '__@{/projects}__',
+                           '__@{/webboard/view}__',
+                          '__@{/maintenance/users/search?roleName=ALL}__'
+                        } },
+              roles   = ${ {
+                          'USER,ADMIN',
+                          'USER,ADMIN',
+                          'USER,ADMIN',
+                          'USER,ADMIN',
+                          'USER,ADMIN',
+                          'USER,ADMIN',
+                          'USER,ADMIN',
+                          'USER,ADMIN',
+                          'ADMIN'
+                        } },
+              uri   = ${#httpServletRequest.requestURI}" >
+          <ul class="list-unstyled" th:each="menu, status : ${menus}">
+            <li
+              th:if="${#strings.contains(roles[__${status.index}__], sessionUserRole)}"
+              th:with="bg=${#strings.contains(uri, paths[__${status.index}__])} ? 'background-color:#dc9edc;' : '' "
+              th:style="${bg}"><a
+              th:href="${toPaths[__${status.index}__]}">[[${menu}]]</a></li>
+          </ul>
+
+        </div>
+        <ul class="list-unstyled ctas">
+          <li><a class="article" href="javascript:App.logout();">ログアウト</a></li>
+        </ul>
+      </nav>
+    </div><!-- //.wrapper -->
+  </div><!-- //#sideMenu -->
+</body>
+</html>

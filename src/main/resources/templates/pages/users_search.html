@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>ユーザ管理</title>
+<meta th:include="users_layout :: head" th:remove="tag"></meta>
+<script>
+  $(function() {
+    var outer = $("<div>").css({
+      visibility: "hidden",
+      width: 100,
+      overflow: "scroll",
+    }).appendTo("body"), width = $("<div>").css({
+      width: "100%"
+    }).appendTo(outer).outerWidth(), result = 0;
+
+    outer.remove();
+    result = 100 - width;
+    $(".table-fixed thead").css({
+      paddingRight: result
+    });
+  });
+</script>
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div class="wrapper">
+		<!--/* ▼ サイドメニュー表示 */-->
+		<div th:include="common/layout :: sideMenu"></div>
+		<!--/* ▲ サイドメニュー表示 */-->
+		<div class="container">
+			<!--/* ▼ タブ表示 */-->
+			<div th:include="users_layout :: tabs"></div>
+			<!--/* ▲ タブ表示 */-->
+
+			<div class="tab">
+				<div class="boardArea">
+					<!--/* ▼ 検索フォーム */-->
+					<form method="get" action="#"
+						th:action="@{/maintenance/users/search}"
+						th:object="${usersSearchForm}">
+						<table class="search_conditions">
+							<tr>
+								<td colspan="2"><input type="text" id="searchUserId"
+									th:field="*{userId}" placeholder="ユーザID" maxlength="10"
+									size="30" /></td>
+								<td colspan="1"><span
+									th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"
+									style="color: red;">error!</span></td>
+							</tr>
+							<tr>
+								<td colspan="2"><input type="text" id="searchUserName"
+									th:field="*{userName}" placeholder="ユーザ名" maxlength="20"
+									size="30" /></td>
+								<td colspan="1"><span
+									th:if="${#fields.hasErrors('userName')}"
+									th:errors="*{userName}" style="color: red;">error!</span></td>
+							</tr>
+							<tr>
+								<td colspan="1"><label>権限：</label></td>
+								<td colspan="1"><input id="radioAll" type="radio"
+									value="ALL" th:field="*{roleName}" checked="checked">
+									全て <input id="radioUser" type="radio" value="USER"
+									th:field="*{roleName}"> 一般 <input id="radioAdmin"
+									type="radio" value="ADMIN" th:field="*{roleName}"> 管理者
+								</td>
+								<td colspan="1"><span
+									th:if="${#fields.hasErrors('roleName')}"
+									th:errors="*{roleName}" style="color: red;">error!</span></td>
+							</tr>
+
+							<tr>
+								<td colspan="1"></td>
+								<td colspan="1" style="text-align: right;">
+									<button type="submit">検索</button>
+								</td>
+								<td colspan="1"></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<!--/* ▲ 検索フォーム */-->
+			</div>
+
+
+			<div class="count">
+				<!--/* ▼ 検索結果件数 */-->
+				<span th:text="'【検索結果：'+${#lists.size(usersList)}+'件】'"></span>
+				<!--/* ▲ 検索結果件数 */-->
+			</div>
+			<div>
+				<!--/* ▼ 検索結果リスト */-->
+				<table class="table table-fixed table-hover table-stripe border"
+					id="dataList">
+					<thead>
+						<tr>
+							<th class="col-lg-7  col-md-12 col-sm-12 col-xs-12">
+								<div class="row">
+									<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+										<label>No.</label>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+										<label>ユーザID</label>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+										<label>ユーザ名</label>
+									</div>
+									<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+										<div class="row">
+											<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+												<label>権限</label>
+											</div>
+											<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+												<label>有効</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</th>
+							<th class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+										<label>最終更新日時</label>
+									</div>
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+										<label>登録日時</label>
+									</div>
+								</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="user" th:each="user, userStat:${usersList}">
+							<td class="col-lg-7  col-md-12 col-sm-12 col-xs-12">
+								<div class="row">
+									<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+										<label th:text="${userStat.count}"></label>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-truncate">
+										<a
+											th:href="@{'/maintenance/users/detail?userId=' + ${user.userId}}"
+											th:text="${user.userId}" th:title="${user.userId}"></a>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-truncate">
+										<label th:text="${user.userName}" th:title="${user.userName}"></label>
+									</div>
+									<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+										<div class="row">
+											<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+												<label
+													th:text="${'ADMIN'.equals(user.roleName) ? '管理者' : 'USER'.equals(user.roleName) ? '一般' : 'ERROR'}"></label>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</td>
+							<td class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-truncate">
+										<label
+											th:text="${#dates.format(user.updatedAt, 'yyyy/MM/dd HH:mm:ss')}"
+											th:title="${#dates.format(user.updatedAt, 'yyyy/MM/dd HH:mm:ss')}"></label>
+									</div>
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-truncate">
+										<label
+											th:text="${#dates.format(user.createdAt, 'yyyy/MM/dd HH:mm:ss')}"
+											th:title="${#dates.format(user.createdAt, 'yyyy/MM/dd HH:mm:ss')}"></label>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<!--/* ▲ 検索結果リスト */-->
+			</div>
+		</div>
+	</div>
+	<!--/* ▼ フッター表示 */-->
+	<div th:include="common/layout :: footer"></div>
+	<!--/* ▲ フッター表示 */-->
+</body>
+</html>

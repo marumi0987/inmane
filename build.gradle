@@ -1,0 +1,106 @@
+buildscript {
+  ext {
+    springBootVersion = '2.3.0.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'
+apply plugin: 'jacoco'
+apply plugin: 'checkstyle'
+apply plugin: "org.sonarqube"
+
+dependencyManagement {
+    imports {
+        mavenBom "org.junit:junit-bom:5.4.2"
+    }
+}
+
+checkstyle {
+  configFile = file('config/checkstyle/google_checks_custom.xml')
+  toolVersion = '8.27'
+  ignoreFailures = true
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "http://localhost:9000/"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/customJacocoReportDir/test/jacocoTestReport.xml"
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        html.enabled false
+        csv.enabled false
+    }
+}
+test {
+    useJUnitPlatform()
+}
+
+
+bootWar {
+  archiveName 'inmane.war'
+}
+
+group = 'jp.co.careritz'
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+repositories {
+  mavenCentral()
+}
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-web-services'
+  implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'org.springframework.session:spring-session-core'
+  implementation 'org.springframework.session:spring-session-jdbc'
+  implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+  implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+  // Development
+  implementation 'org.mariadb.jdbc:mariadb-java-client:2.6.0'
+  implementation 'org.apache.commons:commons-lang3'
+  implementation 'org.eclipse.collections:eclipse-collections-api:10.2.0'
+  implementation 'org.eclipse.collections:eclipse-collections:10.2.0'
+  implementation 'org.springframework.boot:spring-boot-devtools'
+
+
+  // used to reduce boilerplate code
+
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
+  testCompileOnly 'org.projectlombok:lombok'
+  testAnnotationProcessor 'org.projectlombok:lombok'
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'junit', module: 'junit'
+  }
+  testImplementation 'org.junit.jupiter:junit-jupiter'//JUnit5のAPI
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'//IDEなどのサポート用
+  testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'//JUnit3,4対応
+  testCompileOnly 'junit:junit'
+  providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+}

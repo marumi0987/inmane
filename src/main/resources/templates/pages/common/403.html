@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/schema/security"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:fragment="head">
+<title>NOT FOUND</title>
+<meta th:include="common/layout.html::head" th:remove="tag"></meta>
+</head>
+
+<body>
+  <main>
+  <section>
+    <div>
+      <div>FORBIDDEN</div>
+
+      <div>
+        <h1>権限がありません</h1>
+
+        <hr>
+        <p>権限がないため、表示することが出来ませんでした。</p>
+      </div>
+    </div>
+  </section>
+  </main>
+</body>
+</html>

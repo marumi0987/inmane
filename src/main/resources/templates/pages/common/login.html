@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Login</title>
+<meta th:include="common/layout :: head" th:remove="tag"></meta>
+<link rel="stylesheet" th:href="@{/css/page/login.css}" />
+</head>
+
+<body class="bg-image">
+  <div class="bg-mask fadein">
+    <div class="page-header text-center" style="padding-top: 25px;">
+      <h2 style="margin-top:20px;">
+        <img th:src="@{images/logo.svg}" width="70px" height="70px" style="padding: 5px;"> In Mane -稼働状況管理システム-
+      </h2>
+    </div>
+    <br />
+    <div class="container" style="margin-top:-30px;">
+      <div class="text-center">
+        <p th:if="${loginFailureMessage!=null or loginFailureMessage!=''}" th:text="${loginFailureMessage}" style="color: red;"></p>
+      </div>
+      <div class="card card-container">
+        <div class="box">
+          <form th:action="@{/security/login}" method="POST">
+            <div class="form-group">
+              <label for="userId" class="control-label">ユーザID</label>
+              <input type="text" id="userId" class="form-control" name="userId" placeholder="UserId" maxlength="10" required />
+            </div>
+            <div class="form-group">
+              <label for="password" class="control-label">パスワード</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Password" maxlength="20" required />
+            </div>
+            <br>
+            <button type="submit" class="btn btn-info btn-block">ログイン</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

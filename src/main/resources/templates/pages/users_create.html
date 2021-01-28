@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>ユーザ管理</title>
+<meta th:include="users_layout :: head" th:remove="tag"></meta>
+</head>
+<body>
+  <div class="wrapper">
+    <!--/* ▼ サイドメニュー表示 */-->
+    <div th:include="common/layout :: sideMenu"></div>
+    <!--/* ▲ サイドメニュー表示 */-->
+
+    <div class="container">
+
+      <!--/* ▼ タブ表示 */-->
+      <div th:include="users_layout :: tabs"></div>
+      <!--/* ▲ タブ表示 */-->
+
+      <div class="tab">
+        <div class="boardArea" style="border-top: none;">
+          <form id="createForm" method="post" th:object="${usersCreateForm}" th:action="@{/maintenance/users/new}">
+            <table>
+              <tr>
+                <!-- /* start ユーザID */ -->
+                <td colspan="1" class="h_data">
+                  <label class="required">ユーザID</label>
+                </td>
+                <td colspan="2">
+                  <input type="text" th:field="*{userId}" size="15" maxlength="10" placeholder="半角英数5～10文字" required />
+                  <br/>
+                  <span th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}" class="errorMsg">error!</span>
+                </td>
+                <!-- /* end ユーザID */ -->
+              </tr>
+              <tr>
+                <!-- /* start パスワード */ -->
+                <td class="h_data" colspan="1">
+                  <label>パスワード</label>
+                </td>
+                <td colspan="1">
+                  <label style="font-size: 12px;">※初期パスワードは「共通キーワード＋ユーザID」になります。</label>
+                </td>
+                <!-- /* end パスワード */ -->
+              </tr>
+              <tr>
+                <!-- /* start ユーザ名 */ -->
+                <td class="h_data" colspan="1">
+                  <label class="required">ユーザ名</label>
+                </td>
+                <td colspan="1">
+                  <input type="text" th:field="*{userName}" size="32" maxlength="20" placeholder="全半角1～20文字" required />
+                  <br/>
+                  <span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" class="errorMsg">error!</span>
+                </td>
+                <!-- /* end ユーザ名 */ -->
+              </tr>
+              <tr>
+                <!-- /* start 権限 */ -->
+                <td class="h_data" colspan="1">
+                  <label class="required">権限</label>
+                </td>
+                <td colspan="1">
+                  <input id="radioUser" type="radio" value="USER" th:field="*{roleName}" checked="checked" />
+                  <label>ユーザ</label>
+                  <input id="radioAdmin" type="radio" value="ADMIN" th:field="*{roleName}" />
+                  <label>管理者</label>
+                  <br/>
+                  <span th:if="${#fields.hasErrors('roleName')}" th:errors="*{roleName}" class="errorMsg">error!</span>
+                </td>
+              </tr>
+              <!-- /* end 権限 */ -->
+              <tr>
+                <!-- /* start ボタン */ -->
+                <td></td>
+                <td colspan="3" th:object="${usersCreateForm}" th:with="label='登録', msg= '__#{confirm.app.execution}__'">
+                  <button type="button" th:onclick="'Users.submitHandler(\'createForm\', \''+ __${#strings.replace(msg, '{name}', label)}__ + '\')'">登録</button>
+                </td>
+                <!-- /* end ボタン */ -->
+              </tr>
+            </table>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/* ▼ フッター表示 */-->
+  <div th:include="common/layout :: footer"></div>
+  <!--/* ▲ フッター表示 */-->
+</body>
+</html>

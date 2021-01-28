@@ -1,0 +1,41 @@
+.gradle
+/build/
+/bin/
+/lib/
+/logs/
+var/
+docker/inmane-db/data/
+docker/sonarqube/sonarqube_data/
+
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+!docker/sonarqube/sonarqube_extensions/plugins/**.jar
+!gradle-wrapper.jar
+*.war
+*.ear
+
+
+#Gradle temporary files
+target/
+
+#Eclipse files
+**/.project
+**/.classpath
+**/.settings/
+blog/bin/
+**/.tern-project
+
+#IntelliJ files
+**/*.iml
+**/.idea
+**/.gradle
+
+#vscode files
+**/.vscode/
+**/ApexSQL/
+**/Quest/
